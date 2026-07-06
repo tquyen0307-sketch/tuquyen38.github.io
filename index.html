@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phạm Tú Quyên — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Quicksand:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FDF2F6;
+    --bg-soft: #FBE7EF;
+    --panel: #FFFFFF;
+    --ink: #33202B;
+    --ink-soft: #8A6A78;
+    --pink: #E85D8A;
+    --pink-deep: #C23B70;
+    --pink-pale: #FBD3E1;
+    --gold: #E8B84B;
+    --line: rgba(194,59,112,0.18);
+    --radius: 18px;
+    --max: 1040px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, var(--bg-soft), transparent 55%),
+      radial-gradient(ellipse at bottom right, #FCE9F1, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Quicksand', sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; margin:0; color:var(--pink-deep); }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--pink);
+  }
+  a{ color:var(--pink-deep); }
+
+  /* ---------- SPARKLE LAYER ---------- */
+  .sparkle{
+    position:absolute;
+    width:14px; height:14px;
+    pointer-events:none;
+    opacity:0;
+    animation: twinkle 3.2s ease-in-out infinite;
+  }
+  .sparkle::before{
+    content:"";
+    position:absolute; inset:0;
+    background: radial-gradient(circle, var(--gold) 0%, rgba(232,184,75,0) 70%);
+  }
+  .sparkle::after{
+    content:"✦";
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--gold);
+    font-size:11px;
+  }
+  @keyframes twinkle{
+    0%, 100%{ opacity:0; transform:scale(0.4) rotate(0deg); }
+    50%{ opacity:1; transform:scale(1) rotate(25deg); }
+  }
+
+  /* Sparkle trôi nổi phủ toàn trang */
+  .float-sparkle{
+    position:fixed;
+    pointer-events:none;
+    z-index:5;
+    opacity:0;
+    animation: float-twinkle linear infinite;
+  }
+  .float-sparkle::after{
+    content:"✦";
+    color: var(--gold);
+    text-shadow: 0 0 6px rgba(232,184,75,0.6);
+  }
+  .float-sparkle.pink::after{ content:"✧"; color: var(--pink); text-shadow: 0 0 6px rgba(232,93,138,0.5); }
+  @keyframes float-twinkle{
+    0%{ opacity:0; transform: translateY(0) scale(0.5) rotate(0deg); }
+    10%{ opacity:1; }
+    50%{ transform: translateY(-40px) scale(1.1) rotate(180deg); }
+    90%{ opacity:1; }
+    100%{ opacity:0; transform: translateY(-90px) scale(0.5) rotate(360deg); }
+  }
+
+  /* Tiêu đề ánh kim */
+  .shimmer-text{
+    background: linear-gradient(100deg, var(--pink-deep) 30%, var(--gold) 45%, var(--pink) 55%, var(--pink-deep) 70%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer-move 5s linear infinite;
+  }
+  @keyframes shimmer-move{
+    to{ background-position: -250% center; }
+  }
+
+  /* Sparkle bật ra khi hover thẻ */
+  .card::after{
+    content:"✦";
+    position:absolute;
+    top:14px; left:16px;
+    font-size:1rem;
+    color: var(--gold);
+    opacity:0;
+    transform: scale(0.5) rotate(0deg);
+    transition: opacity .25s ease, transform .35s ease;
+    pointer-events:none;
+  }
+  .card:hover::after{
+    opacity:1;
+    transform: scale(1.15) rotate(20deg);
+  }
+
+  /* Xuất hiện mượt khi cuộn tới */
+  .reveal{
+    opacity:0;
+    transform: translateY(22px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  /* Glow nhẹ quanh avatar */
+  .hero-avatar{
+    animation: avatar-glow 3.5s ease-in-out infinite;
+  }
+  @keyframes avatar-glow{
+    0%, 100%{ box-shadow: 0 8px 24px rgba(194,59,112,0.22); }
+    50%{ box-shadow: 0 8px 32px rgba(232,184,75,0.35), 0 0 0 6px rgba(251,211,225,0.4); }
+  }
+
+  /* Badge hồng phát sáng nhẹ theo nhịp */
+  .hero-badge{
+    animation: badge-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes badge-pulse{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(232,93,138,0.25); }
+    50%{ box-shadow: 0 0 0 8px rgba(232,93,138,0); }
+  }
+
+  /* ---------- NAV ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:30;
+    display:flex; justify-content:center; gap:6px;
+    padding:14px 20px;
+    background: rgba(253,242,246,0.85);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .topnav a{
+    text-decoration:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--ink-soft);
+    padding:8px 16px;
+    border-radius: 999px;
+    border:1px solid transparent;
+    transition: all .2s ease;
+  }
+  .topnav a:hover, .topnav a.active{
+    color:var(--pink-deep);
+    background:var(--panel);
+    border-color: var(--pink-pale);
+    box-shadow: 0 2px 8px rgba(194,59,112,0.15);
+  }
+
+  section{ padding: 72px 24px; max-width: var(--max); margin:0 auto; position:relative; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    text-align:center;
+    padding-top:64px;
+    position:relative;
+  }
+  .hero-badge{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase;
+    background: var(--pink-pale); color:var(--pink-deep);
+    padding:6px 16px; border-radius:999px;
+    margin-bottom:20px;
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    line-height:1.1;
+  }
+  .hero .tagline{
+    color: var(--ink-soft); max-width:520px; margin:16px auto 0;
+    font-size:1.05rem;
+  }
+  .hero-avatar{
+    width:132px; height:132px; margin:30px auto 0;
+    border-radius:50%;
+    background: linear-gradient(135deg, var(--pink-pale), #fff);
+    border:3px solid var(--panel);
+    box-shadow: 0 8px 24px rgba(194,59,112,0.22);
+    overflow:hidden;
+  }
+  .hero-avatar img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+
+  /* ---------- SECTION HEADER ---------- */
+  .sec-head{ text-align:center; margin-bottom:44px; }
+  .sec-head .eyebrow{ display:block; margin-bottom:8px; }
+  .sec-head h2{ font-size: clamp(1.7rem, 3vw, 2.3rem); }
+  .sec-head p{ color:var(--ink-soft); max-width:560px; margin:10px auto 0; }
+
+  /* ---------- PANEL / CARD BASE ---------- */
+  .panel{
+    background:var(--panel);
+    border-radius: var(--radius);
+    border:1px solid var(--line);
+    box-shadow: 0 6px 20px rgba(194,59,112,0.08);
+    padding: 30px 32px;
+  }
+
+  /* ---------- GIỚI THIỆU ---------- */
+  .about-grid{
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:26px;
+  }
+  @media (max-width:700px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-grid h3{ font-size:1.05rem; margin-bottom:8px; }
+  .about-grid p{ color:var(--ink-soft); margin:0; }
+  dl.facts dt{
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem;
+    text-transform:uppercase; letter-spacing:0.08em; color:var(--pink);
+    margin-top:14px;
+  }
+  dl.facts dt:first-child{ margin-top:0; }
+  dl.facts dd{ margin:2px 0 0; }
+
+  /* ---------- DỰ ÁN CARDS ---------- */
+  .card-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap:24px;
+  }
+  .card{
+    background:var(--panel);
+    border-radius: var(--radius);
+    border:1px solid var(--line);
+    padding: 24px 24px 22px;
+    position:relative;
+    overflow:hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(194,59,112,0.18);
+  }
+  .card .num{
+    font-family:'Fraunces', serif; font-size:2.1rem; color:var(--pink-pale);
+    position:absolute; top:10px; right:18px; line-height:1;
+  }
+  .card h3{ font-size:1.05rem; max-width:80%; margin-bottom:6px; }
+  .card .field{ margin-top:10px; }
+  .card .field .label{
+    font-family:'IBM Plex Mono', monospace; font-size:0.64rem;
+    text-transform:uppercase; letter-spacing:0.07em; color:var(--pink);
+  }
+  .card .field .value{ font-size:0.9rem; color:var(--ink); margin-top:2px; }
+  .badge{
+    display:inline-block; margin-top:14px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.62rem;
+    text-transform:uppercase; letter-spacing:0.06em;
+    padding:4px 12px; border-radius:999px;
+    background: linear-gradient(110deg, var(--pink-pale) 8%, #fff 18%, var(--pink-pale) 33%);
+    background-size: 200% 100%;
+    color:var(--pink-deep);
+    animation: shine 3.5s linear infinite;
+  }
+  @keyframes shine{
+    to{ background-position: -200% 0; }
+  }
+  .card a.link{
+    display:inline-block; margin-top:12px; font-size:0.82rem;
+    text-decoration:none; color:var(--pink-deep);
+    border-bottom:1px solid var(--pink-deep);
+  }
+
+  /* ---------- TỔNG KẾT ---------- */
+  .reflect-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:22px;
+  }
+  @media (max-width:760px){ .reflect-grid{ grid-template-columns:1fr; } }
+  .reflect-card{
+    background:var(--panel); border-radius:var(--radius); border:1px solid var(--line);
+    padding:24px 22px; text-align:left;
+  }
+  .reflect-card .icon{
+    font-size:1.6rem; margin-bottom:10px; display:block;
+  }
+  .reflect-card h3{ font-size:1rem; margin-bottom:8px; }
+  .reflect-card p{ color:var(--ink-soft); font-size:0.92rem; margin:0; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-panel{ text-align:center; }
+  .contact-links{
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+    margin-top:20px;
+  }
+  .contact-links a{
+    font-family:'IBM Plex Mono', monospace; font-size:0.8rem;
+    text-decoration:none; color:var(--pink-deep);
+    background:var(--pink-pale); padding:8px 18px; border-radius:999px;
+    transition: background .2s ease;
+  }
+  .contact-links a:hover{ background:var(--pink); color:#fff; }
+
+  footer{
+    text-align:center; padding:26px 20px 50px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--ink-soft);
+  }
+
+  .divider{
+    border:none; height:1px;
+    background: linear-gradient(90deg, transparent, var(--line), transparent);
+    max-width:var(--max); margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav" id="tabs">
+  <a href="#gioi-thieu" data-tab>Giới thiệu</a>
+  <a href="#du-an" data-tab>Dự án</a>
+  <a href="#tong-ket" data-tab>Tổng kết</a>
+  <a href="#lien-he" data-tab>Liên hệ</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <span class="hero-badge">✨ Portfolio cá nhân ✨</span>
+  <h1 class="shimmer-text">Phạm Tú Quyên</h1>
+  <p class="tagline">Bài tập dự án cá nhân - Digital Portfolio</p>
+  <div class="hero-avatar"><img src="avatar.jpg" alt="Ảnh chân dung Phạm Tú Quyên"></div>
+</section>
+
+<hr class="divider">
+
+<!-- ================= TRANG 1: GIỚI THIỆU ================= -->
+<section id="gioi-thieu">
+  <div class="sec-head">
+    <span class="eyebrow">Trang 01</span>
+    <h2>Giới thiệu</h2>
+    <p>Vài nét về bản thân, mục tiêu học tập và mục tiêu của Portfolio này.</p>
+  </div>
+
+  <div class="panel about-grid reveal">
+    <div>
+      <h3>Về mình</h3>
+      <p>Mình là Phạm Tú Quyên, sinh viên ngành Ngôn ngữ Đức tại Trường Đại học Ngoại ngữ - ĐHQGHN. Ngoài giờ học, mình thích nghe nhạc và đọc sách.</p>
+      <h3 style="margin-top:22px;">Mục tiêu học tập & phát triển cá nhân</h3>
+      <p style="margin:0;">Trong thời gian học đại học và sau khi tốt nghiệp, mình hướng đến:</p>
+      <ul style="color:var(--ink-soft); margin:8px 0 0; padding-left:20px;">
+        <li>Nâng cao trình độ tiếng Đức, hướng đến chứng chỉ B2 - C1 trong thời gian học đại học</li>
+        <li>Trở thành biên - phiên dịch tiếng Đức chuyên nghiệp sau khi tốt nghiệp</li>
+        <li>Mở rộng hiểu biết văn hóa thông qua đọc sách, xem phim, kết nối với cộng đồng người Đức tại Việt Nam</li>
+        <li>Tích lũy kinh nghiệm thực tế qua thực tập tại Goethe-Institut hoặc doanh nghiệp Đức</li>
+        <li>Phát triển bản thân toàn diện — rèn tư duy phân tích, kỹ năng giao tiếp và làm việc độc lập</li>
+      </ul>
+      <h3 style="margin-top:22px;">Mục tiêu của Portfolio này</h3>
+      <p style="margin:0;">Portfolio này được xây dựng nhằm:</p>
+      <ul style="color:var(--ink-soft); margin:8px 0 0; padding-left:20px;">
+        <li>Nắm vững các khái niệm cơ bản về công nghệ số và chuyển đổi số</li>
+        <li>Thực hành các kỹ năng số như tìm kiếm thông tin, xử lý dữ liệu, sử dụng công cụ kỹ thuật số hiệu quả</li>
+        <li>Ứng dụng công nghệ vào học tập và nghiên cứu ngôn ngữ và văn hóa Đức</li>
+        <li>Phát triển tư duy số trong môi trường học thuật và nghề nghiệp hiện đại</li>
+        <li>Xây dựng sản phẩm học tập số thể hiện quá trình tiếp thu và vận dụng kiến thức của môn học</li>
+      </ul>
+    </div>
+    <dl class="facts">
+      <dt>Họ và tên</dt><dd>Phạm Tú Quyên</dd>
+      <dt>MSSV</dt><dd>25041965</dd>
+      <dt>Ngành học</dt><dd>Ngôn ngữ Đức — Trường Đại học Ngoại ngữ, ĐHQGHN</dd>
+      <dt>Sở thích</dt><dd>Nghe nhạc, đọc sách</dd>
+      <dt>Email</dt><dd>tquyen0307@gmail.com</dd>
+    </dl>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ================= TRANG 2: DỰ ÁN ================= -->
+<section id="du-an">
+  <div class="sec-head">
+    <span class="eyebrow">Trang 02</span>
+    <h2>Dự án — Bài tập đã hoàn thành</h2>
+    <p>Tập hợp kết quả 6 bài tập thành phần, mỗi bài trình bày mục tiêu, quá trình thực hiện và sản phẩm cuối cùng.</p>
+  </div>
+
+  <div class="card-grid">
+
+    <div class="card reveal">
+      <span class="num">01</span>
+      <h3>Máy tính và các thiết bị ngoại vi</h3>
+      <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Thao tác cơ bản với tệp tin và thư mục.</p>
+      <div class="field">
+        <div class="label">Mục tiêu</div>
+        <div class="value">Rèn luyện kỹ năng tạo, đổi tên, sao chép, di chuyển, xóa tệp tin và thư mục một cách thành thạo trên hệ điều hành Windows (có thể điều chỉnh cho macOS/Linux).</div>
+      </div>
+      <div class="field">
+        <div class="label">Quá trình thực hiện</div>
+        <div class="value">Thực hành trên File Explorer: tạo thư mục thực hành mang tên cá nhân, tạo và đổi tên tệp văn bản, tạo thư mục con, sao chép và di chuyển tệp giữa các thư mục, xoá tệp vào Thùng rác cũng như xoá vĩnh viễn, sau đó khôi phục lại tệp từ Thùng rác.</div>
+      </div>
+      <span class="badge">Hoàn thành</span><br>
+      <a class="link" href="https://drive.google.com/drive/folders/11BCWgy9A27-5nH0J5yJZZFe6ubj-uUhM?usp=sharing" target="_blank" rel="noopener">Xem sản phẩm →</a>
+    </div>
+
+    <div class="card reveal">
+      <span class="num">02</span>
+      <h3>Khai thác dữ liệu và thông tin</h3>
+      <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Tìm kiếm và đánh giá thông tin học thuật.</p>
+      <div class="field">
+        <div class="label">Mục tiêu</div>
+        <div class="value">Phát triển kỹ năng tìm kiếm và đánh giá thông tin học thuật từ các nguồn đáng tin cậy.</div>
+      </div>
+      <div class="field">
+        <div class="label">Quá trình thực hiện</div>
+        <div class="value">Với chủ đề "Chuyển đổi số và ứng dụng AI trong giảng dạy ngoại ngữ", đã tìm kiếm và tổng hợp 11 nguồn tài liệu quốc tế (tạp chí, hội thảo, lý thuyết nền), sau đó lập bảng đánh giá độ tin cậy dựa trên các tiêu chí: tác giả, nơi xuất bản, phương pháp nghiên cứu, số trích dẫn và tính cập nhật, từ đó xếp hạng mức độ tin cậy của từng nguồn.</div>
+      </div>
+      <span class="badge">Hoàn thành</span><br>
+      <a class="link" href="https://drive.google.com/drive/folders/1VUiXDh2kIx6TSo2scU5F45jnMA6lmlBG?usp=sharing" target="_blank" rel="noopener">Xem sản phẩm →</a>
+    </div>
+
+    <div class="card reveal">
+      <span class="num">03</span>
+      <h3>Tổng quan về trí tuệ nhân tạo</h3>
+      <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Viết Prompt hiệu quả cho các tác vụ học tập.</p>
+      <div class="field">
+        <div class="label">Mục tiêu</div>
+        <div class="value">Phát triển kỹ năng viết prompt hiệu quả để tận dụng tối đa khả năng của các mô hình ngôn ngữ lớn trong học tập.</div>
+      </div>
+      <div class="field">
+        <div class="label">Quá trình thực hiện</div>
+        <div class="value">Thử nghiệm 3 công cụ AI (ChatGPT, Notion AI, Claude AI) trên các tác vụ học tập, sau đó xây dựng 3 phiên bản prompt cho cùng một yêu cầu — tạo câu hỏi ôn tập tiếng Đức chủ đề "Freizeit": từ prompt cơ bản (yêu cầu ngắn, chung chung), đến prompt cải tiến (bổ sung số lượng câu hỏi, phân loại kỹ năng, yêu cầu đáp án), và prompt nâng cao (áp dụng role prompting, few-shot example, yêu cầu sắp xếp từ dễ đến khó). Kết quả cho thấy prompt càng cụ thể và có cấu trúc rõ ràng thì AI càng phản hồi chính xác, logic và tự nhiên hơn, từ đó đúc kết thành bộ nguyên tắc viết prompt hiệu quả.</div>
+      </div>
+      <span class="badge">Hoàn thành</span><br>
+      <a class="link" href="https://drive.google.com/drive/folders/1Rj3Cx964volQvvYmQszuYEB9gXzLbqSj?usp=sharing" target="_blank" rel="noopener">Xem sản phẩm →</a>
+    </div>
+
+    <div class="card reveal">
+      <span class="num">04</span>
+      <h3>Giao tiếp và hợp tác trong môi trường số</h3>
+      <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm.</p>
+      <div class="field">
+        <div class="label">Mục tiêu</div>
+        <div class="value">Thành thạo các công cụ hợp tác trực tuyến và thể hiện năng lực quản lý, điều phối cá nhân trong dự án nhóm.</div>
+      </div>
+      <div class="field">
+        <div class="label">Quá trình thực hiện</div>
+        <div class="value">Với dự án nhóm "Mở Cafeteria trong Trường học", phụ trách phần Vận hành nhân sự (đề xuất cách phục vụ, phân chia ca làm, lịch hoạt động). Đã sử dụng Trello để lập bảng theo dõi tiến độ riêng theo 4 cột trạng thái; Google Docs để soạn thảo nội dung chung và góp ý qua Comment/Suggesting mode; Google Meet để thảo luận, xin ý kiến nhóm và cập nhật tiến độ; Google Sheets dùng chung để phân chia và theo dõi công việc minh bạch giữa các thành viên.</div>
+      </div>
+      <span class="badge">Hoàn thành</span><br>
+      <a class="link" href="https://drive.google.com/drive/folders/114CyLXVOhlh0obW4-INBublkbpDeS2av?usp=sharing" target="_blank" rel="noopener">Xem sản phẩm →</a>
+    </div>
+
+    <div class="card reveal">
+      <span class="num">05</span>
+      <h3>Sáng tạo nội dung số</h3>
+      <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Sử dụng AI tạo sinh để hỗ trợ sáng tạo nội dung.</p>
+      <div class="field">
+        <div class="label">Mục tiêu</div>
+        <div class="value">Thành thạo việc sử dụng các công cụ AI tạo sinh để hỗ trợ quá trình sáng tạo nội dung số.</div>
+      </div>
+      <div class="field">
+        <div class="label">Quá trình thực hiện</div>
+        <div class="value">Thực hiện một infographic chủ đề "Cơ hội học tập và làm việc tại Đức cho sinh viên Việt Nam", kết hợp 3 công cụ AI theo từng giai đoạn: ChatGPT để lên ý tưởng và xây dựng nội dung (học bổng DAAD, chương trình Ausbildung, yêu cầu tiếng Đức, cơ hội việc làm); Bing Image Creator/DALL-E để tạo hình minh hoạ và icon theo phong cách flat design, tông màu cờ Đức; Canva AI (Magic Design) để dựng layout hoàn chỉnh từ nội dung và hình ảnh đã có. Sau đó so sánh hiệu quả từng công cụ và phân tích vai trò, giới hạn cũng như các vấn đề đạo đức khi dùng AI trong sáng tạo nội dung.</div>
+      </div>
+      <span class="badge">Hoàn thành</span><br>
+      <a class="link" href="https://drive.google.com/drive/folders/1Q9JcxaYKbSwJn14ID7yG0qVz8JKdYGpT?usp=sharing" target="_blank" rel="noopener">Xem sản phẩm →</a>
+    </div>
+
+    <div class="card reveal">
+      <span class="num">06</span>
+      <h3>An toàn và liêm chính học thuật trong môi trường số</h3>
+      <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Sử dụng AI có trách nhiệm trong học tập và nghiên cứu.</p>
+      <div class="field">
+        <div class="label">Mục tiêu</div>
+        <div class="value">Phát triển kỹ năng sử dụng AI có trách nhiệm và đạo đức trong học tập và nghiên cứu.</div>
+      </div>
+      <div class="field">
+        <div class="label">Quá trình thực hiện</div>
+        <div class="value">Phân tích chính sách sử dụng AI tại ULIS - ĐHQGHN (điều được phép, nghĩa vụ khai báo, ranh giới bị cấm); thực hành sử dụng AI qua 3 prompt cho nhiệm vụ tổng hợp tài liệu về ứng dụng AI trong dạy - học ngoại ngữ, sau đó kiểm chứng, chỉnh sửa và trích dẫn theo chuẩn APA 7; phân tích các vấn đề đạo đức về ranh giới hỗ trợ hợp lý - gian lận học thuật, quyền sở hữu trí tuệ và tác động của AI đến phát triển kỹ năng. Từ đó đúc kết thành bộ 7 nguyên tắc cá nhân khi sử dụng AI có trách nhiệm trong học tập.</div>
+      </div>
+      <span class="badge">Hoàn thành</span><br>
+      <a class="link" href="https://drive.google.com/drive/folders/1-3XcRPi9PRg-qa3FEZGd-217cE0ZL5SO?usp=drive_link" target="_blank" rel="noopener">Xem sản phẩm →</a>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ================= TRANG 3: TỔNG KẾT ================= -->
+<section id="tong-ket">
+  <div class="sec-head">
+    <span class="eyebrow">Trang 03</span>
+    <h2>Tổng kết</h2>
+    <p>Trải nghiệm, cảm nhận cá nhân và những điều đọng lại sau quá trình thực hiện Portfolio này.</p>
+  </div>
+
+  <div class="reflect-grid">
+    <div class="reflect-card reveal">
+      <span class="icon">🌸</span>
+      <h3>Trải nghiệm & cảm nhận</h3>
+      <p>Quá trình thực hiện 6 bài tập và xây dựng Portfolio này giúp mình nhìn lại một cách hệ thống những gì đã học trong môn Nhập môn Công nghệ số. Từ những thao tác tưởng chừng đơn giản như quản lý tệp tin, đến việc phối hợp cùng nhóm và sử dụng AI một cách có trách nhiệm, mình cảm thấy tự tin hơn hẳn khi làm việc trong môi trường số.</p>
+    </div>
+    <div class="reflect-card reveal">
+      <span class="icon">✨</span>
+      <h3>Kiến thức & kỹ năng đã học</h3>
+      <p>Mình đã rèn được kỹ năng quản lý tệp tin - thư mục khoa học, tìm kiếm và đánh giá độ tin cậy của nguồn thông tin học thuật, viết prompt hiệu quả cho AI, sử dụng thành thạo các công cụ cộng tác trực tuyến (Trello, Google Docs, Sheets, Meet), ứng dụng AI tạo sinh vào sáng tạo nội dung, và quan trọng nhất là hiểu rõ ranh giới đạo đức khi sử dụng AI trong học thuật.</p>
+    </div>
+    <div class="reflect-card reveal">
+      <span class="icon">🎀</span>
+      <h3>Điểm tâm đắc & thách thức</h3>
+      <p>Điều mình tâm đắc nhất là bài về sử dụng AI có trách nhiệm — nó thay đổi cách mình nhìn nhận AI, từ một công cụ "làm hộ" thành một người bạn đồng hành cần được kiểm chứng và khai báo minh bạch. Thách thức lớn nhất là sắp xếp và trình bày lại toàn bộ 6 bài tập sao cho vừa ngắn gọn vừa đầy đủ trên một trang Portfolio duy nhất.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ================= LIÊN HỆ ================= -->
+<section id="lien-he" class="contact-panel">
+  <div class="sec-head">
+    <span class="eyebrow">Kết nối</span>
+    <h2>Liên hệ</h2>
+    <p>Cảm ơn thầy cô đã dành thời gian xem qua Portfolio này. Em rất mong nhận được góp ý để hoàn thiện hơn trong chặng đường học tập sắp tới!</p>
+  </div>
+  <div class="contact-links">
+    <a href="mailto:tquyen0307@gmail.com">Email</a>
+    <a href="tel:0948498182">Điện thoại</a>
+  </div>
+</section>
+
+<footer>© 2026 Phạm Tú Quyên — Portfolio cá nhân, cập nhật lần cuối 07/07/2026</footer>
+
+<script>
+  // Scroll-spy cho thanh menu
+  const tabs = document.querySelectorAll('#tabs a[data-tab]');
+  const sections = Array.from(tabs).map(t => document.querySelector(t.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    const y = window.scrollY + window.innerHeight * 0.3;
+    sections.forEach((sec, i) => { if(sec && sec.offsetTop <= y) idx = i; });
+    tabs.forEach((t,i) => t.classList.toggle('active', i === idx));
+  }
+  document.addEventListener('scroll', onScroll);
+  onScroll();
+
+  // Rắc sparkle lấp lánh ngẫu nhiên quanh khu vực hero
+  const hero = document.querySelector('.hero');
+  const positions = [
+    {top:'6%', left:'12%'}, {top:'20%', left:'85%'}, {top:'55%', left:'6%'},
+    {top:'70%', left:'90%'}, {top:'12%', left:'50%'}, {top:'80%', left:'45%'}
+  ];
+  positions.forEach((p, i) => {
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.style.top = p.top; s.style.left = p.left;
+    s.style.animationDelay = (i * 0.5) + 's';
+    hero.appendChild(s);
+  });
+
+  // Sparkle trôi nổi nhẹ nhàng khắp trang (bỏ qua nếu người dùng chọn giảm hiệu ứng)
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){
+    const sparkleCount = 22;
+    for(let i = 0; i < sparkleCount; i++){
+      const fs = document.createElement('span');
+      fs.className = 'float-sparkle' + (i % 2 === 0 ? ' pink' : '');
+      fs.style.left = Math.random() * 100 + 'vw';
+      fs.style.top = Math.random() * 100 + 'vh';
+      fs.style.fontSize = (10 + Math.random() * 10) + 'px';
+      fs.style.animationDuration = (4 + Math.random() * 5) + 's';
+      fs.style.animationDelay = (Math.random() * 6) + 's';
+      document.body.appendChild(fs);
+    }
+  }
+
+  // Hiệu ứng mượt khi cuộn tới từng khối
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
